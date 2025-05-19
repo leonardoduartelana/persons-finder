@@ -1,27 +1,108 @@
-# Welcome
+# 👥 Persons Finder – Backend Challenge
 
-This is a start-up Git repo for a project we are calling 'Persons finder'.
+Welcome to the **Persons Finder** backend challenge! This project simulates the backend for a mobile app that helps users find people around them.
 
-Your job is to create a set of API's that will feed a mobile application that has one purpose: find people around you.
+Your task is to implement a REST API that allows clients to create, update, and search for people based on location and other criteria.
 
-Requirements:
-- POST API to create a 'person'
-- PUT API to update/create someone's location using latitude and longitude
-- GET API to retrieve people around query location with a radius in KM, Use query param for radius. Extra challenge: Return list ordered by distance to each person.
-- GET API to retrieve a person or persons name using their ids
-- Responses must follow a JSON format
+---
 
-You'll also need to build the logic and services for saving/retrieving locations and persons.
+## 📌 Requirements
 
-Steps:
-- Clone the project
-- Implement required API's and services
-- Push your project to your personal github
+Implement the following endpoints:
 
+### ➕ `POST /persons`
 
-### Extra challenge
-### Add a million, 10 million and 100 million entries and challenge your API's efficiency 
+Create a new person.
 
-For any questions, please reach out on: leo@getsquareone.app
+---
 
+### ✏️ `PUT /persons/{id}/location`
 
+Update (or create if not exists) a person's current **latitude** and **longitude**.
+
+---
+
+### 🔍 `GET /persons/nearby`
+
+Find people around a **query location**, specified using the following query parameters:
+
+* `lat`: latitude
+* `lon`: longitude
+* `radiusKm`: radius in kilometres
+
+> 🧠 **Extra challenge**: Return the list **sorted by distance** to the query point.
+
+---
+
+### 👤 `GET /persons`
+
+Retrieve one or more persons by their IDs. Accepts:
+
+* `id`: one or more person IDs (e.g., `?id=1&id=2`)
+
+---
+
+## 📦 Expected Output
+
+All responses must be in **valid JSON format**, following clean and consistent REST API design principles.
+
+---
+
+## 🧱 What You Need to Build
+
+* Domain models: `Person`, `Location`, etc.
+* Services for saving, updating, and querying data
+* In-memory storage or a basic persistent layer
+* Proper project structure (e.g. controller / service / repository)
+* Extra bonus if you use UseCase pattern (Controller -> Use Case (business logic) -> Service -> Repository)
+
+---
+
+## 🧪 Bonus Points
+
+### ✅ Testing
+
+* Include **unit tests** for service logic
+* Include **integration tests** for API endpoints
+* Use a test framework like **JUnit**, **MockK**, or **Mockito**
+
+---
+
+### 🧠 Scalability Challenge
+
+* Seed the system with **1 million**, **10 million**, and **100 million** records
+* Benchmark and **optimise** the `GET /persons/nearby` endpoint
+* Explain any indexing or query optimisation strategies used
+
+---
+
+### 📚 Clean Code
+
+* Use **DTOs** for API request and response bodies
+* Apply proper **validation**, **error handling**, and maintain clean separation of concerns
+
+---
+
+## ✅ Getting Started
+
+```bash
+git clone https://github.com/leonardoduartelana/persons-finder.git
+cd persons-finder
+```
+
+Implement your solution and push it to your **own GitHub repository**.
+
+---
+
+## 📬 Submission & Questions
+
+* Submit the link to your GitHub repository
+* For any questions, email: [leo@emerge.nz](mailto:leo@emerge.nz)
+
+---
+
+## 💡 Tips
+
+* Use **OpenAPI/Swagger** to document your APIs (optional, but encouraged)
+* Handle edge cases like missing locations or malformed input
+* Design the system **as if it were going into production**
