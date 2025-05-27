@@ -17,5 +17,4 @@ class LocationsServiceImpl : LocationsService {
     override fun findAround(latitude: Double, longitude: Double, radiusInKm: Double): List<Location> {
         TODO("Not yet implemented")
     }
-
 }
