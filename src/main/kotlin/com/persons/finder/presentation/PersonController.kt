@@ -1,5 +1,6 @@
 package com.persons.finder.presentation
 
+import com.persons.finder.common.dto.TransactionResponse
 import com.persons.finder.data.Person
 import com.persons.finder.domain.services.PersonsService
 import com.persons.finder.presentation.dto.CreatePersonRequest
@@ -29,10 +30,11 @@ class PersonController(private val personService: PersonsService) {
     fun createPerson(
         @Valid @RequestBody
         request: CreatePersonRequest,
-    ): ResponseEntity<Person> {
+    ): ResponseEntity<TransactionResponse<Person>> {
         val person = Person(name = request.name)
         val savedPerson = personService.save(person)
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPerson)
+        val transactionResponse = TransactionResponse(data = savedPerson)
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponse)
     }
 
     /*
