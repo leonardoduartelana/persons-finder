@@ -2,7 +2,8 @@ package com.persons.finder.common.dto
 
 import java.util.UUID
 
-data class TransactionResponse<T>(
-    val transactionId: String = UUID.randomUUID().toString(),
+open class TransactionResponse<T>(
     val data: T,
-)
+) {
+    val transactionId: String = UUID.randomUUID().toString()
+}

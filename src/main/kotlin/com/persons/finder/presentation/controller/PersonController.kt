@@ -1,9 +1,10 @@
-package com.persons.finder.presentation
+package com.persons.finder.presentation.controller
 
-import com.persons.finder.common.dto.TransactionResponse
 import com.persons.finder.data.Person
 import com.persons.finder.domain.services.PersonsService
+import com.persons.finder.presentation.api.PersonApi
 import com.persons.finder.presentation.dto.CreatePersonRequest
+import com.persons.finder.presentation.dto.CreatePersonResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -15,7 +16,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("api/v1/persons")
-class PersonController(private val personService: PersonsService) {
+class PersonController(private val personService: PersonsService): PersonApi {
 
     /*
         TODO PUT API to update/create someone's location using latitude and longitude
@@ -27,14 +28,14 @@ class PersonController(private val personService: PersonsService) {
         (JSON) Body and return the id of the created entity
     */
     @PostMapping
-    fun createPerson(
+    override fun createPerson(
         @Valid @RequestBody
         request: CreatePersonRequest,
-    ): ResponseEntity<TransactionResponse<Person>> {
+    ): ResponseEntity<CreatePersonResponse> {
         val person = Person(name = request.name)
         val savedPerson = personService.save(person)
-        val transactionResponse = TransactionResponse(data = savedPerson)
-        return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponse)
+        val response = CreatePersonResponse(data = savedPerson)
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
     /*
