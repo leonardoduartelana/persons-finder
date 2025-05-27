@@ -1,8 +1,6 @@
 package com.persons.finder.presentation.api
 
 import com.persons.finder.common.dto.ErrorResponse
-import com.persons.finder.common.dto.TransactionResponse
-import com.persons.finder.data.Person
 import com.persons.finder.presentation.dto.CreatePersonRequest
 import com.persons.finder.presentation.dto.CreatePersonResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -13,8 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import javax.validation.Valid
 
+@RequestMapping("api/v1/persons")
 interface PersonApi {
 
     @Operation(
@@ -35,7 +35,7 @@ interface PersonApi {
             ),
         ],
     )
-    @PostMapping("/api/v1/persons")
+    @PostMapping
     fun createPerson(
         @Valid
         @RequestBody
