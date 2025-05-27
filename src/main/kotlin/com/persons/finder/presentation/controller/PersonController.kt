@@ -1,13 +1,19 @@
-package com.persons.finder.presentation
+package com.persons.finder.presentation.controller
 
-import org.springframework.beans.factory.annotation.Autowired
+import com.persons.finder.data.Person
+import com.persons.finder.domain.services.PersonsService
+import com.persons.finder.presentation.api.PersonApi
+import com.persons.finder.presentation.dto.CreatePersonRequest
+import com.persons.finder.presentation.dto.CreatePersonResponse
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
-@RequestMapping("api/v1/persons")
-class PersonController @Autowired constructor() {
+class PersonController(private val personService: PersonsService) : PersonApi {
 
     /*
         TODO PUT API to update/create someone's location using latitude and longitude
@@ -18,6 +24,15 @@ class PersonController @Autowired constructor() {
         TODO POST API to create a 'person'
         (JSON) Body and return the id of the created entity
     */
+    override fun createPerson(
+        @Valid @RequestBody
+        request: CreatePersonRequest,
+    ): ResponseEntity<CreatePersonResponse> {
+        val person = Person(name = request.name)
+        val savedPerson = personService.save(person)
+        val response = CreatePersonResponse(data = savedPerson)
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
+    }
 
     /*
         TODO GET API to retrieve people around query location with a radius in KM, Use query param for radius.
@@ -38,5 +53,4 @@ class PersonController @Autowired constructor() {
     fun getExample(): String {
         return "Hello Example"
     }
-
 }
