@@ -37,5 +37,57 @@ class PersonControllerTest {
                     jsonPath("$.transactionId") { exists() }
                 }
         }
+
+        @Test
+        fun `POST create person with blank name returns 400 and validation error`() {
+            val createRequest = CreatePersonRequest(name = "")
+
+            mockMvc.post("/api/v1/persons") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(createRequest)
+            }
+                .andExpect {
+                    status { isBadRequest() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    jsonPath("$.error.code") { value("VALIDATION_ERROR") }
+                    jsonPath("$.error.message") { value("Name must not be blank") }
+                    jsonPath("$.transactionId") { exists() }
+                }
+        }
+
+        @Test
+        fun `POST create person with invalid characters returns 400 and validation error`() {
+            val createRequest = CreatePersonRequest(name = "'; DROP TABLE person; --")
+
+            mockMvc.post("/api/v1/persons") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(createRequest)
+            }
+                .andExpect {
+                    status { isBadRequest() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    jsonPath("$.error.code") { value("VALIDATION_ERROR") }
+                    jsonPath("$.error.message") { value("Name contains invalid characters") }
+                    jsonPath("$.transactionId") { exists() }
+                }
+        }
+
+        @Test
+        fun `POST create person with name too long returns 400 and validation error`() {
+            val longName = "A".repeat(101)
+            val createRequest = CreatePersonRequest(name = longName)
+
+            mockMvc.post("/api/v1/persons") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(createRequest)
+            }
+                .andExpect {
+                    status { isBadRequest() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    jsonPath("$.error.code") { value("VALIDATION_ERROR") }
+                    jsonPath("$.error.message") { value("Name must be at most 100 characters") }
+                    jsonPath("$.transactionId") { exists() }
+                }
+        }
     }
 }
