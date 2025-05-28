@@ -1,6 +1,8 @@
 package com.persons.finder.presentation.api
 
 import com.persons.finder.common.dto.ErrorResponse
+import com.persons.finder.presentation.dto.AddLocationRequest
+import com.persons.finder.presentation.dto.AddLocationResponse
 import com.persons.finder.presentation.dto.CreatePersonRequest
 import com.persons.finder.presentation.dto.CreatePersonResponse
 import com.persons.finder.presentation.dto.GetPersonResponse
@@ -13,7 +15,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -75,4 +79,13 @@ interface PersonApi {
     fun getPersonsById(
         @RequestParam("id") ids: List<Long>,
     ): ResponseEntity<GetPersonResponse>
+
+    @Operation(summary = "Update or create person location")
+    @PutMapping("/{id}/location")
+    fun addLocation(
+        @PathVariable id: Long,
+        @Valid
+        @RequestBody
+        request: AddLocationRequest,
+    ): ResponseEntity<AddLocationResponse>
 }

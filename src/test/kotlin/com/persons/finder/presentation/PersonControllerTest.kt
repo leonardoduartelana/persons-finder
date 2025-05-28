@@ -1,5 +1,6 @@
 package com.persons.finder.presentation
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.persons.finder.data.Location
 import com.persons.finder.data.Person
 import com.persons.finder.presentation.dto.CreatePersonRequest
 import com.persons.finder.repository.PersonRepository
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 
 class PersonControllerTest {
 
@@ -30,8 +32,6 @@ class PersonControllerTest {
 
         @BeforeEach
         fun setup() {
-            personRepository.deleteAll()
-
             val person1 = Person(id = 1L, name = "Hnin")
             val person2 = Person(id = 2L, name = "Win")
 
@@ -108,7 +108,7 @@ class PersonControllerTest {
         }
 
         @Test
-        fun `should return 404 when person not found`() {
+        fun `GET person should return 404 when person not found`() {
             mockMvc.get("/api/v1/persons") {
                 param("id", "1000")
                 accept(MediaType.APPLICATION_JSON)
@@ -121,7 +121,7 @@ class PersonControllerTest {
         }
 
         @Test
-        fun `should return 400 when user enter invalid input`() {
+        fun `Get person should return 400 when user enter invalid input`() {
             mockMvc.get("/api/v1/persons") {
                 param("id", "Hnin")
                 accept(MediaType.APPLICATION_JSON)
@@ -134,7 +134,7 @@ class PersonControllerTest {
         }
 
         @Test
-        fun `should return 200 and person list when valid ids provided`() {
+        fun `Get person should return 200 and person list when valid ids provided`() {
             val id1 = 1L
             val id2 = 2L
 
@@ -150,6 +150,67 @@ class PersonControllerTest {
                     jsonPath("$.data[0].name") { value("Hnin") }
                     jsonPath("$.data[1].id") { value(id2) }
                     jsonPath("$.data[1].name") { value("Win") }
+                }
+        }
+
+        @Test
+        fun `Put location should return 404 when person not found`() {
+            val request = Location(latitude = 0.0, longitude = 0.0)
+            mockMvc.put("/api/v1/persons/999/location") {
+                accept(MediaType.APPLICATION_JSON)
+                contentType = MediaType.APPLICATION_JSON
+                content = ObjectMapper().writeValueAsString(request)
+            }
+                .andExpect {
+                    status { isNotFound() }
+                    jsonPath("$.error.code") { value("ENTITY_NOT_FOUND") }
+                    jsonPath("$.error.message") { value("No persons found for given ID") }
+                }
+        }
+
+        @Test
+        fun `Put location should return 400 when request body is invalid`() {
+            val jsonString = """{"latitude": "Hnin", "longitude": 0}"""
+            mockMvc.put("/api/v1/persons/999/location") {
+                accept(MediaType.APPLICATION_JSON)
+                contentType = MediaType.APPLICATION_JSON
+                content = jsonString
+            }
+                .andExpect {
+                    status { isBadRequest() }
+                    jsonPath("$.error.code") { value("INVALID_INPUT") }
+                    jsonPath("$.error.message") { value("Invalid Request Body") }
+                }
+        }
+
+        @Test
+        fun `Put location should return 400 when latitude and longitude value is invalid`() {
+            val request = Location(latitude = 1000.0, longitude = 1000.0)
+            mockMvc.put("/api/v1/persons/999/location") {
+                accept(MediaType.APPLICATION_JSON)
+                contentType = MediaType.APPLICATION_JSON
+                content = ObjectMapper().writeValueAsString(request)
+            }
+                .andExpect {
+                    status { isBadRequest() }
+                    jsonPath("$.error.code") { value("VALIDATION_ERROR") }
+                }
+        }
+
+        @Test
+        fun `Put location should return 200 when valid request comes`() {
+            val request = Location(latitude = 0.0, longitude = 0.0)
+            mockMvc.put("/api/v1/persons/1/location") {
+                accept(MediaType.APPLICATION_JSON)
+                contentType = MediaType.APPLICATION_JSON
+                content = ObjectMapper().writeValueAsString(request)
+            }
+                .andExpect {
+                    status { isOk() }
+                    jsonPath("$.data.personId") { value(1) }
+                    jsonPath("$.data.latitude") { value(request.latitude) }
+                    jsonPath("$.data.longitude") { value(request.longitude) }
+                    jsonPath("$.transactionId") { exists() }
                 }
         }
     }
