@@ -1,13 +1,14 @@
 package com.persons.finder.presentation.controller
 
+import com.persons.finder.common.exception.PersonNotFoundException
 import com.persons.finder.data.Person
 import com.persons.finder.domain.services.PersonsService
 import com.persons.finder.presentation.api.PersonApi
 import com.persons.finder.presentation.dto.CreatePersonRequest
 import com.persons.finder.presentation.dto.CreatePersonResponse
+import com.persons.finder.presentation.dto.GetPersonResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
@@ -49,8 +50,9 @@ class PersonController(private val personService: PersonsService) : PersonApi {
         // API would be called using person or persons ids
      */
 
-    @GetMapping("")
-    fun getExample(): String {
-        return "Hello Example"
+    override fun getPersonsById(ids: List<Long>): ResponseEntity<GetPersonResponse> {
+        val persons = personService.getByIds(ids)
+        if (persons.isEmpty()) throw PersonNotFoundException("No persons found for given IDs")
+        return ResponseEntity.ok(GetPersonResponse(data = persons))
     }
 }
