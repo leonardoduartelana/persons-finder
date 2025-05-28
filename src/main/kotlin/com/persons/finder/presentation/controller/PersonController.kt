@@ -1,5 +1,6 @@
 package com.persons.finder.presentation.controller
 
+import com.persons.finder.common.exception.PersonNotFoundException
 import com.persons.finder.data.Person
 import com.persons.finder.domain.services.PersonsService
 import com.persons.finder.presentation.api.PersonApi
@@ -51,11 +52,7 @@ class PersonController(private val personService: PersonsService) : PersonApi {
 
     override fun getPersonsById(ids: List<Long>): ResponseEntity<GetPersonResponse> {
         val persons = personService.getByIds(ids)
-
-        return if (persons.isEmpty()) {
-            ResponseEntity.notFound().build()
-        } else {
-            ResponseEntity.ok(GetPersonResponse(data = persons))
-        }
+        if (persons.isEmpty()) throw PersonNotFoundException("No persons found for given IDs")
+        return ResponseEntity.ok(GetPersonResponse(data = persons))
     }
 }
