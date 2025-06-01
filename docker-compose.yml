@@ -1,0 +1,21 @@
+volumes:
+  postgis-data:
+
+services:
+
+  db:
+    image: kartoza/postgis:17-3.5
+    volumes:
+      - postgis-data:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=gis,persons_finder
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=postgres
+      - ALLOW_IP_RANGE=0.0.0.0/0
+      - POSTGRES_MULTIPLE_EXTENSIONS=postgis
+      - RUN_AS_ROOT=true
+    ports:
+      - "5432:5432"
+    restart: on-failure
+    healthcheck:
+      test: "PGPASSWORD=docker pg_isready -h 127.0.0.1 -U docker -d gis"

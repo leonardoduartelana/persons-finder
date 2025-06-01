@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgis:15-3.4:///persons_finder
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+  jpa:
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway: # Add Flyway configuration
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.flywaydb: DEBUG 

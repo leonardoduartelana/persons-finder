@@ -4,6 +4,17 @@ Welcome to the **Persons Finder** backend challenge! This project simulates the 
 
 Your task is to implement a REST API that allows clients to create, update, and search for people based on location and other criteria.
 
+
+
+## Result
+
+- Implemented all required APIs
+- Implemented unit tests and integration test
+- Using Testcontainer for integration test
+- Integrated with PostGIS and create geo index for location table
+- There is a Performance test suite, however it using Testcontainer so, it might impact the performance. Should use a proper stress-test tool.
+
+
 ---
 
 ## 📌 Requirements
@@ -82,13 +93,6 @@ All responses must be in **valid JSON format**, following clean and consistent R
 * Apply proper **validation**, **error handling**, and maintain clean separation of concerns
 
 ---
-
-## ✅ Getting Started
-
-```bash
-git clone https://github.com/leonardoduartelana/persons-finder.git
-cd persons-finder
-```
 
 Implement your solution and push it to your **own GitHub repository**.
 
